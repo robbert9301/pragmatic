@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 
@@ -13,20 +13,26 @@ from accountapp.templates.accountapp.forms import AccountUpdateForm
 
 def hello_world(request):
 
-    if request.method == "POST":
+    if request.user.is_authenticated:
 
-        tmp = request.POST.get('hello_world_input')
 
-        new_hello_world = HelloWorld()
-        new_hello_world.text = tmp
-        new_hello_world.save()
+        if request.method == "POST":
 
-        hello_world_list = HelloWorld.objects.all() #helloworld의 모든 객체를 다 긁어올수 있다
+            tmp = request.POST.get('hello_world_input')
 
-        return HttpResponseRedirect(reverse('accountapp:hello_world'))
+            new_hello_world = HelloWorld()
+            new_hello_world.text = tmp
+            new_hello_world.save()
+
+            hello_world_list = HelloWorld.objects.all() #helloworld의 모든 객체를 다 긁어올수 있다
+
+            return HttpResponseRedirect(reverse('accountapp:hello_world'))
+        else:
+            hello_world_list = HelloWorld.objects.all()
+            return render(request, 'accountapp/hello_world.html', context={'hello_world_list': hello_world_list})
     else:
-        hello_world_list = HelloWorld.objects.all()
-        return render(request, 'accountapp/hello_world.html', context={'hello_world_list': hello_world_list})
+        return HttpResponseRedirect(reverse('accountapp:login'))
+
 
 class AccountCreateView(CreateView):
     model = User
@@ -41,11 +47,37 @@ class AccountDetailView(DetailView):
 
 class AccountUpdateView(UpdateView):
     model = User
+    context_object_name = 'target_user'
     form_class = AccountUpdateForm
     success_url = reverse_lazy('accountapp:hello_world') #account creation에 성공했다면 그이후에 어디로 연결할 것인지에 대한 구문 & class에서는 reverse를 쓰지 못한다
     template_name = 'accountapp/update.html'
 
+    def get(self, *args, **kwargs):
+        if self.request.user.is_authenticated and self.get_object() == self.request.user: #get_object는 유저의 pk를 가져오는 것
+            return super().get(*args, **kwargs)
+        else:
+            return HttpResponseForbidden()
+
+    def post(self, *args, **kwargs):
+        if self.request.user.is_authenticated and self.get_object() == self.request.user:
+            return super().get(*args, **kwargs)
+        else:
+            return HttpResponseForbidden()
+
 class AccountDeleteView(DeleteView):
     model = User
+    context_object_name = 'target_user'
     success_url = reverse_lazy('accountapp:login')
     template_name = 'accountapp/delete.html'
+
+    def get(self, *args, **kwargs):
+        if self.request.user.is_authenticated and self.get_object() == self.request.user:
+            return super().get(*args, **kwargs)
+        else:
+            return HttpResponseForbidden()
+
+    def post(self, *args, **kwargs):
+        if self.request.user.is_authenticated and self.get_object() == self.request.user:
+            return super().get(*args, **kwargs)
+        else:
+            return HttpResponseForbidden()
