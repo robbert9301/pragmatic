@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 
 # Create your views here.
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DetailView
 
 from accountapp.models import HelloWorld
 
@@ -33,3 +33,7 @@ class AccountCreateView(CreateView):
     success_url = reverse_lazy('accountapp:hello_world') #account creation에 성공했다면 그이후에 어디로 연결할 것인지에 대한 구문 & class에서는 reverse를 쓰지 못한다
     template_name = 'accountapp/create.html'
 
+class AccountDetailView(DetailView):
+    model = User
+    context_object_name = 'target_user'
+    template_name = 'accountapp/detail.html'
