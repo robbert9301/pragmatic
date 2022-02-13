@@ -5,10 +5,20 @@
                 Progmatic
             </h1>
         </div>
-        <dif>
+        <div>
             <span>nav1</span>
             <span>nav2</span>
             <span>nav3</span>
-            <span>nav4</span>
-        </dif>
+            {% if not user.is_authenticated %}
+            <!--  여기서 next는 login 이후에 어디로 보낼것인지에 대한 구문이고 이는 get방식으로 되어있다          -->
+            <a href="{% url 'accountapp:login' %}?next={{ request.path }}">
+                <span>login</span>
+            </a>
+            {% else %}
+            <a href="{% url 'accountapp:logout' %}?next={{ request.path }}">
+                <span>logout</span>
+            </a>
+            {% endif %}
+
+        </div>
     </div>
