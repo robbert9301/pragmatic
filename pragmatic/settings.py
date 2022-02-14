@@ -89,6 +89,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bootstrap4',
     'accountapp',
+    'profileapp',
 ]
 
 MIDDLEWARE = [
@@ -178,6 +179,11 @@ STATICFILES_DIRS = [
 #따로 login html로 들어가서 login을 하게되면 아래의 Redirect를 통해 다시 처음화면으로 돌아가게 만들어주는 인자
 LOGIN_REDIRECT_URL = reverse_lazy('accountapp:hello_world')
 LOGOUT_REDIRECT_URL = reverse_lazy('accountapp:login')
+
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
