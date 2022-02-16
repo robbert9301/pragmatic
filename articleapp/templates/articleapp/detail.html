@@ -17,9 +17,10 @@
             <img style="width: 100%; border-radius: 1rem; margin: 2rem 0"
                     src="{{ target_article.image.url }}" alt="">
 
-            <p>
-                {{ target_article.content }}
-            </p>
+            <div class="text-start">
+<!--                safe로 하면 이상한 tag가 사라진다-->
+                {{ target_article.content | safe }}
+            </div>
 
             {% if target_article.writer == user %}
             <a href="{% url 'articleapp:update' pk=target_article.pk %}"
