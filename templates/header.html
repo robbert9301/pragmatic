@@ -12,7 +12,9 @@
             <a href="{% url 'projectapp:list' %}" class="pragmatic_header_nav">
                 <span>Projects</span>
             </a>
-            <span>nav3</span>
+            <a href="{% url 'subscribeapp:list' %}" class="pragmatic_header_nav">
+                <span>Subscription</span>
+            </a>
             {% if not user.is_authenticated %}
             <!--  여기서 next는 login 이후에 어디로 보낼것인지에 대한 구문이고 이는 get방식으로 되어있다          -->
             <a href="{% url 'accountapp:login' %}?next={{ request.path }}">
